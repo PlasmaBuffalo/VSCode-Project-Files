@@ -2,7 +2,7 @@
 #Assignment: Sockets Homework
 
 import sys
-from PySide6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication
 from TcpServerQt import Branch
 
 if __name__ == "__main__":

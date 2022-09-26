@@ -5,9 +5,9 @@ import sys
 import json
 from random import randint, random, choice
 
-from PySide6.QtCore import QObject, QByteArray, QTimer
-from PySide6.QtNetwork import QTcpSocket, QTcpServer, QHostAddress, QAbstractSocket
-from PySide6.QtWidgets import QApplication
+from PyQt6.QtCore import QObject, QByteArray, QTimer
+from PyQt6.QtNetwork import QTcpSocket, QTcpServer, QHostAddress, QAbstractSocket
+from PyQt6.QtWidgets import QApplication
 
 
 import signal

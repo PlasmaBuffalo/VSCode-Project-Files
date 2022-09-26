@@ -1,8 +1,8 @@
 #Authors: Mathias Boddicker, Kylie Hall, Liam Zalubas, Caleb Jenkins
 #Assignment: Sockets Homework
 
-from PySide6.QtCore import QTimer
-from PySide6.QtWidgets import QApplication
+from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import QApplication
 from TcpServerQt import Bank
 
 if __name__ == "__main__":
