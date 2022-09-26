@@ -1,0 +1,4 @@
+local time = I:GetTime()
+I:Log("time="..time)
+
+--I:Log("thisVector="..localPos.x..", "..localPos.y..", "..localPos.z)
