@@ -6,13 +6,14 @@ def firstFunction(fileName, textString):
     file.close()
 
 
-firstFunction("C:/Users/liamz/OneDrive/Documents/VSC HolderFolder/VSCode-Project-Files/Python/CS420-DPC/In-Class Assignments/textFile1.txt", "chum'd.")
+firstFunction("Python/CS420-DPC/In-Class Assignments/textFile1.txt", "chum'd.")
 
 
 # Write a function that accepts a list of numbers and sorts the values in the list. Any sort algorithm will work (ex. bubble sort).
 def secondFunction(numList):
     # numList.sort()
     # return numList
+    #
     currentIndex = 0
     sorted = False
     while not sorted:
@@ -41,17 +42,6 @@ def mathFunction(a, b):
 #mathFunction(3,5)
 
 # Write a Class titled Animal
-class Animal():
-    def __init__(self, legCt, sound, isHerbivore, weight):
-        self._weight = weight
-        self._legCt = legCt
-        self._sound = sound
-        self._isHerbivore = isHerbivore
-        self._weight = weight
-
-    
-
-
 # This class should contain the following properties
 # number of legs
 # sound it makes
@@ -64,6 +54,37 @@ class Animal():
 # Set a value for all properties in the constructor
 # Override the method "type()" for child class and return the classes type as a string ("Dog" or "Cat")
 # Write a function that accepts an Animal object and prints out the type and sound of the Animal
+
+class Animal():
+    def __init__(self, legCt, sound, isHerbivore, weight):
+        self._legCt = legCt
+        self._sound = sound
+        self._isHerbivore = isHerbivore
+        self._weight = weight  
+    #get/set for legCt
+    def getLegCt(self):
+        return self._legCt
+    def setLegCt(self, newVal):
+        self._legCt = newVal
+    
+    #get/set for sound
+    def getSound(self):
+        return self._sound
+    def setSound(self, newVal):
+        self._sound = newVal
+    
+    #get/set for isHerbivore
+    def getIsHerbivore(self):
+        return self._isHerbivore
+    def setIsHerbivore(self, newVal):
+        self._isHerbivore = newVal
+
+    #get/set for weight
+    def getWeight(self):
+        return self._weight
+    def setWeight(self, newVal):
+        self._weight = newVal
+
 # Use this dictionary to answer the following questions - sampleDict = { "class": { "student": { "name": "Mike", "marks": { "cosc420": 90, "history": 80, "biology":85 } } } }
 # print out the value for the student's name
 # loop through all "marks" and print out the class and score
