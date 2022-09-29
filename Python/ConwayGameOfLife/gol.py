@@ -53,7 +53,7 @@ for i in range(len(table[i])):
     for j in range(len(table[i])):
         frame=tk.Frame(
         master=window,
-        borderwidth=0.4,
+        borderwidth=0.5,
         )
         
         #conditional for button color
@@ -61,7 +61,7 @@ for i in range(len(table[i])):
             bGd="black"
         else:
             bGd="white"
-        
+        frame.grid_propagate(False)
         frame.grid(row=i, column=j)
         button = tk.Button(
             master=frame,
