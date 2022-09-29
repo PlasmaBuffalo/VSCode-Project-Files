@@ -10,18 +10,33 @@ firstFunction("C:/Users/liamz/OneDrive/Documents/VSC HolderFolder/VSCode-Project
 # Write a function that accepts a list of numbers and sorts the values in the list. Any sort algorithm will work (ex. bubble sort).
 def secondFunction(numList):
     currentIndex = 0
-    isSorted = False
-    while not isSorted:
+    sorted = False
+    while not sorted:
+        if currentIndex == len(numList):
+            return
+        currentSmallest = numList[currentIndex]
         for number in numList:
-            print()
-    
+            if number < currentSmallest:
+                temp = numList[currentIndex]
+                numList[currentIndex] = number
+                number = temp
+                currentIndex =+ 1
 # Write a function that accepts 2 numbers. Add, subtract, multiply, and divide the numbers and return all calculated values
-
+def mathFunction(a, b):
+    print(f'a = ', a)
+    print(f'b = ', b)
+    
 # Write a Class titled Animal
 class Animal():
     def __init__(self, legCt, sound, isHerbivore, weight):
-        self.weight = weight
-# This class should contain the following properties 
+        self._weight = weight
+        self._legCt = legCt
+        self._sound = sound
+        self._isHerbivore = isHerbivore
+        self._weight = weight
+    
+    
+# This class should contain the following properties
 # number of legs
 # sound it makes
 # is a vegetarian or not
