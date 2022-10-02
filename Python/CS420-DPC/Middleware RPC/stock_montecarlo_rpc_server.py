@@ -50,7 +50,7 @@ class StockTicker():
 
 if __name__ == "__main__":
 
-	rpcServer = SimpleXMLRPCServer(('169.254.213.62',8000))
+	rpcServer = SimpleXMLRPCServer(('127.0.0.1',8000))
 	rpcServer.register_instance(StockTicker())
 
 	thread = Thread(target=rpcServer.serve_forever, args=())

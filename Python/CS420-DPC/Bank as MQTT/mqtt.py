@@ -5,6 +5,7 @@ import pandas
 import paho.mqtt.client as mqtt
 from PyQt6.QtCore import QThread, pyqtSignal
 
+
 class MqttClient(QThread):
 
     connected = pyqtSignal()
@@ -23,7 +24,7 @@ class MqttClient(QThread):
         self.client.on_subscribe = self.on_subscribe
 
     def run(self):
-        self.client.connect(self.ip,self.port)
+        self.client.connect(self.ip, self.port)
         self.client.loop_start()
 
     def isConnected(self):
@@ -53,7 +54,6 @@ class MqttClient(QThread):
 
         print(mid)
         print(granted_qos)
-        
 
     def subscribe(self, topic):
         if self.__isConnected:
