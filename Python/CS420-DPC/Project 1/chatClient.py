@@ -12,12 +12,12 @@ class ChatClient(MqttClient):
     def __init__(self, chatClientId, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._chatClientId = chatClientId
-        self._bankIsOpen = False
+        self._serverIsOpen = False
         self._pubTopic = '/bank/request/chatClient{}'.format(self._chatClientId)
-        self._bankStatusTopic = '/bank/status'
+        self._serverStatusTopic = '/bank/status'
         self._chatResponseTopic = '/bank/response/chatClient{}'.format(
             self._chatClientId)
-        self.subscribe(self._bankStatusTopic)
+        self.subscribe(self._serverStatusTopic)
         self.subscribe(self._chatResponseTopic)
 
     # overriding method from MqttClient
@@ -28,15 +28,15 @@ class ChatClient(MqttClient):
         data = json.loads(msg.payload)
         if 'status' in data:
             if data['status'] == 'open':
-                self._bankIsOpen = True
+                self._serverIsOpen = True
             elif data['status'] == 'closed':
-                self._bankIsOpen = False
+                self._serverIsOpen = False
                 self.terminate()
         elif 'was_success' in data:
             pass
 
     def sendMoneyRequest(self):
-        if not self._bankIsOpen:
+        if not self._serverIsOpen:
             return
 
         data = {

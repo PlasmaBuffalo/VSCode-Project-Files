@@ -71,3 +71,4 @@ class MqttClient(QThread):
     #defines publish behavior, will publish to topic and defines some special behavior for retaining info
     def publish(self, topic, data, qos=0, retain=False):
         self.client.publish(topic, data, qos, retain)
+
