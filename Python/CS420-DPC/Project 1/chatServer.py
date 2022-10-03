@@ -1,14 +1,19 @@
 
-import sys
+import signal
 import json
-import pandas as pd
-import numpy as np
-import pymysql
-from xmlrpc.server import SimpleXMLRPCServer
+import sys
 from threading import Thread
+from xmlrpc.server import SimpleXMLRPCServer
 
+import numpy as np
+import pandas as pd
+import pymysql
+from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import QApplication
 
-class ChatServerDB():
+from mqtt import MqttClient
+
+class ChatServer():
 
     def __init__(self):
         hostname = "chum"
@@ -20,41 +25,95 @@ class ChatServerDB():
         # Create a cursor object. Allows you to navigate the DB
         self.cur = self.conn.cursor()
 
-    def runSimulation(self, ticker, number_simulations):
-
-        query = ("Select * " +
-                 "from StockPrices " +
-                 "where Ticker = '{}'").format(ticker)
-
-        data = pd.read_sql(query, self.conn)
-        data0 = data['Close']
-
-        returns = np.log(1 + data0.pct_change())
-        avg = returns.mean()
-        stdDev = returns.std()
-
-        simPrices = []
-        for i in range(number_simulations):
-            simReturns = np.random.normal(avg, stdDev, 252)
-            price = data0.iloc[-1]  # take last row.. most recent price
-            simPrice = price * (simReturns + 1).cumprod()
-
-            simPrice = simPrice.flatten()
-            simPrice = np.insert(simPrice, 0, data0.values.tolist(), 0)
-
-            simPrices.append(simPrice.tolist())
-
-        print('Monte Carlo Simulation executed {} times for the stock {}.'.format(
-            number_simulations, ticker))
-        return simPrices
-
 
 if __name__ == "__main__":
 
-    rpcServer = SimpleXMLRPCServer(('169.254.213.62', 8000))
-    rpcServer.register_instance(StockTicker())
+    rpcServer = SimpleXMLRPCServer(('localhost', 8000))
+    rpcServer.register_instance(ChatServer())
 
     thread = Thread(target=rpcServer.serve_forever, args=())
     thread.start()
 
     print('Stock MonteCarlo RPC Server is running..')
+
+class Bank(MqttClient):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._money = 1000
+        self._statusTopic = '/bank/status'
+        self._branchTopic = '/bank/response/branch{}'
+        self.connected.connect(self.publishOpen)
+
+    def publishOpen(self):
+        msg = {
+            'from': 'bank',
+            'status': 'open'
+        }
+        self.publish(self._statusTopic, json.dumps(
+            msg).encode('utf-8'), 0, True)
+        print('Open status published')
+
+    def sendClosingCommand(self):
+        msg = {
+            'from': 'bank',
+            'status': 'closed'
+        }
+        self.publish(self._statusTopic, json.dumps(
+            msg).encode('utf-8'), 0, True)
+        print('Sending closing bell!')
+        closingTimer.stop()
+
+    # overriding method from MqttClient
+    def on_message(self, client, userdata, msg):
+        print('Processing Message on topic : ', msg.topic)
+        data = json.loads(msg.payload)
+        print(data)
+
+        amnt = data['amount']
+        branchId = data['from']
+
+        wasSuccessful = False
+        if data['msg'] == 'withdraw':
+            wasSuccessful = self.withdraw(amnt)
+        elif data['msg'] == 'deposit':
+            wasSuccessful = self.deposit(amnt)
+
+        response = {
+            'from': 'bank',
+            'msg': 'withdraw',
+            'was_success': wasSuccessful
+        }
+
+        self.publish(self._branchTopic.format(branchId),
+                     json.dumps(response).encode('utf-8'))
+
+    def deposit(self, depositAmnt):
+        self._money += depositAmnt
+        return True
+
+    def withdraw(self, withdrawAmnt):
+
+        if withdrawAmnt < self._money:
+            self._money -= withdrawAmnt
+            return True
+        else:
+            print('Withdraw failed. Not enough funds.')
+            return False
+
+
+if __name__ == "__main__":
+
+    app = QApplication([])
+
+    bank = Bank('127.0.0.1', 1883)
+    bank.subscribe('/bank/request/#')
+
+    closingTimer = QTimer()
+    closingTimer.setSingleShot(True)
+    closingTimer.timeout.connect(bank.sendClosingCommand)
+    closingTimer.start(10000)
+
+    bank.start()
+
+    app.exec()
