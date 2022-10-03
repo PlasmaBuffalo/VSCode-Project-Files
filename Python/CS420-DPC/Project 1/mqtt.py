@@ -4,18 +4,18 @@ import os
 import pandas
 import paho.mqtt.client as mqtt
 from PyQt6.QtCore import QThread, pyqtSignal
+from getmac import get_mac_address as gma
 
 
 class MqttClient(QThread):
 
     connected = pyqtSignal()
-
-    def __init__(self, ip, port, name, uuid=""):
+    #defines basic behavior for main functions 
+    def __init__(self, ip, port):
         super().__init__()
         self.ip = ip
         self.port = port
-        self.name = name
-        self.uuid = uuid
+        self.uuid: str = gma() or ''
         self.__isConnected = False
         self.topicsToSubscribe = []
         self.client = mqtt.Client(uuid)
@@ -24,12 +24,12 @@ class MqttClient(QThread):
         self.client.on_message = self.on_message
         self.client.on_subscribe = self.on_subscribe
 
-    #connects the client to the server on start
+    #connects the client to the server defined by the client IP and port args on start
     def run(self):
         self.client.connect(self.ip, self.port)
         self.client.loop_start()
 
-    #returns a boolean value indicating whether the client is connected
+    #returns a boolean value indicating whether the client is connected to the server
     def isConnected(self):
         return self.__isConnected
 
@@ -71,4 +71,12 @@ class MqttClient(QThread):
     #defines publish behavior, will publish to topic and defines some special behavior for retaining info
     def publish(self, topic, data, qos=0, retain=False):
         self.client.publish(topic, data, qos, retain)
-
+""" 
+each mqttclient has the following defined behaviors and properties: 
+- ip
+- port
+- uuid
+- __isConnected
+- topicsToSubscribe
+- 
+"""
