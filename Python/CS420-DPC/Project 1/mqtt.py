@@ -11,13 +11,14 @@ class MqttClient(QThread):
 
     connected = pyqtSignal()
     #defines basic behavior for main functions 
-    def __init__(self, ip, port):
+    def __init__(self, ip, port, uuid=''):
         super().__init__()
         self.ip = ip
         self.port = port
         self.uuid: str = gma() or ''
         self.__isConnected = False
         self.topicsToSubscribe = []
+        #mqtt methods
         self.client = mqtt.Client(uuid)
         self.client.on_connect = self.on_connect
         self.client.on_disconnect = self.on_disconnect

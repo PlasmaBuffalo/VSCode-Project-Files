@@ -1,4 +1,5 @@
 import sys
+from xmlrpc.client import boolean
 from mqtt import MqttClient
 from threading import Timer
 from random import choice, random
@@ -10,12 +11,14 @@ class ChatClient(MqttClient):
 
     def __init__(self, chatClientId, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._chatClientId = chatClientId
+        #each chat client can choose its own display name, since UUID is unique identifier
+        self._name = sys.argv[0]
+        #when the server is open, things happen. This keeps track of that
         self._serverIsOpen = False
-        self._pubTopic = '/bank/request/chatClient{}'.format(self._chatClientId)
+        self._pubTopic: str = '/data/chatroom/chatClient{}'.format(self.uuid)
         self._serverStatusTopic = '/bank/status'
-        self._chatResponseTopic = '/bank/response/chatClient{}'.format(
-            self._chatClientId)
+        self._chatResponseTopic: str = '/bank/response/chatClient{}'.format(
+            self.uuid)
         self.subscribe(self._serverStatusTopic)
         self.subscribe(self._chatResponseTopic)
 
