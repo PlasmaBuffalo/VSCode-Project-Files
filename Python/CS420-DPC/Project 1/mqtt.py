@@ -79,5 +79,9 @@ each mqttclient has the following defined behaviors and properties:
 - uuid
 - __isConnected
 - topicsToSubscribe
-- 
+- client
+- on_connect
+- on_disconnect
+- on_message
+- on_subscribe
 """
