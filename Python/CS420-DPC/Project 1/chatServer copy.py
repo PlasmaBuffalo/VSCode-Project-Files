@@ -13,41 +13,40 @@ from PyQt6.QtWidgets import QApplication
 
 from mqtt import MqttClient
 
-class ChatServer():
+
+class ChatServer(MqttClient):
 
     def __init__(self):
         hostname = "chum"
         db_user = "CS420"
         db_pswd = "CS420"
-        db = "MonteCarlo"
         self.conn = pymysql.connect(
-            host=hostname, user=db_user, password=db_pswd, database=db)
+            host=hostname, user=db_user, password=db_pswd)
         # Create a cursor object. Allows you to navigate the DB
         self.cur = self.conn.cursor()
 
 
 if __name__ == "__main__":
 
+    # RPC server communicates to clients
     rpcServer = SimpleXMLRPCServer(('localhost', 8000))
     rpcServer.register_instance(ChatServer())
 
     thread = Thread(target=rpcServer.serve_forever, args=())
     thread.start()
 
-    print('Stock MonteCarlo RPC Server is running..')
 
 class Bank(MqttClient):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._money = 1000
-        self._statusTopic = '/bank/status'
+        self._serverStatusTopic = '/bank/status'
         self._branchTopic = '/bank/response/branch{}'
         self.connected.connect(self.publishOpen)
 
     def publishOpen(self):
         msg = {
-            'from': 'bank',
+            'from': 'chatServer',
             'status': 'open'
         }
         self.publish(self._statusTopic, json.dumps(
@@ -56,7 +55,7 @@ class Bank(MqttClient):
 
     def sendClosingCommand(self):
         msg = {
-            'from': 'bank',
+            'from': 'chatServer',
             'status': 'closed'
         }
         self.publish(self._statusTopic, json.dumps(
