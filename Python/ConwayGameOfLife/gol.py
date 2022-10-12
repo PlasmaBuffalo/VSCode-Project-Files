@@ -73,9 +73,9 @@ for i in range(len(table[i])):
         button.pack()
 
 window.mainloop()
+window
 waiting = True
 lastTime = time.time()
-
 
 while waiting:
     timeDelta = time.time() - lastTime
