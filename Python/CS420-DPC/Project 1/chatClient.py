@@ -35,6 +35,7 @@ class ChatClient(MqttClient):
             pass
 
     def sendMoneyRequest(self):
+        #if server is closed, stop method preemptively
         if not self._serverIsOpen:
             return
 
