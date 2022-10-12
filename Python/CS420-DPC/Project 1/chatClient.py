@@ -9,30 +9,27 @@ from PyQt6.QtCore import QTimer
 class ChatClient(MqttClient):
 
     def __init__(self, chatClientId, *args, **kwargs):
+        #this contains ip, port, uuid of MqttClient
         super().__init__(*args, **kwargs)
+
+        #each client has its own unique id
         self._chatClientId = chatClientId
+        #tracks if server is online
         self._serverIsOpen = False
-        self._pubTopic = '/bank/request/chatClient{}'.format(self._chatClientId)
-        self._serverStatusTopic = '/bank/status'
-        self._chatResponseTopic = '/bank/response/chatClient{}'.format(
+        #clients will publish all messages on the request topic using RPC calls
+        self._pubTopic = '/msgServer/request/chatClient{}'.format(self._chatClientId)
+        #clients will subscribe to the server status topic
+        self._serverStatusTopic = '/msgServer/status'
+        #clients listen on the chat response topc
+        self._chatResponseTopic = '/msgServer/response/chatClient{}'.format(
             self._chatClientId)
         self.subscribe(self._serverStatusTopic)
         self.subscribe(self._chatResponseTopic)
 
     # overriding method from MqttClient
     def on_message(self, client, userdata, msg):
-        print('-----------------------')
-        print(msg.topic)
-        print(msg.payload)
-        data = json.loads(msg.payload)
-        if 'status' in data:
-            if data['status'] == 'open':
-                self._serverIsOpen = True
-            elif data['status'] == 'closed':
-                self._serverIsOpen = False
-                self.terminate()
-        elif 'was_success' in data:
-            pass
+        #when a client sends a message, it goes to the chatServer message handler using RPC methods
+        print('')
 
     def sendMoneyRequest(self):
         #if server is closed, stop method preemptively
@@ -62,12 +59,10 @@ if __name__ == "__main__":
 
     chatClientId = sys.argv[1]
 
+
+    # client connects on localhost for now given the above ID name
     chatClient = ChatClient(chatClientId=chatClientId, ip='127.0.0.1', port=1883)
 
-    msgTimer = QTimer()
-    msgTimer.timeout.connect(chatClient.sendMoneyRequest)
-
     chatClient.start()
-    msgTimer.start(2500)
-
+    
     app.exec()

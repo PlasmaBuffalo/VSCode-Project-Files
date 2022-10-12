@@ -5,8 +5,6 @@ import pandas
 import paho.mqtt.client as mqtt
 from PyQt6.QtCore import QThread, pyqtSignal
 
-# defining an MqttClient running on a QThread
-
 
 class MqttClient(QThread):
 
