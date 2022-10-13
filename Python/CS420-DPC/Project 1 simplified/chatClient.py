@@ -1,9 +1,10 @@
-from re import X
 import sys
 from mqtt import MqttClient
-from threading import Thread
+from threading import Timer
+from random import choice, random
 import json
 from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import QTimer
 
 class ChatClient(MqttClient):
 
@@ -14,26 +15,24 @@ class ChatClient(MqttClient):
         #each client has its own unique id
         self._chatClientId = chatClientId
         #clients will publish all messages on the request topic using RPC calls
-        self._sendChannel = '/msgServer/request/chatClient{}'.format(self._chatClientId)
-        #clients listen on their own chat response topic
-        self._receiveChannel = '/msgServer/response/chatClient{}'.format(self._chatClientId)
-        self.subscribe(self._myChatResponseTopic)
+        self._pubTopic = '/msgServer/request/chatClient{}'.format(self._chatClientId)
+        #clients will subscribe to the server status topic
+        self._serverStatusTopic = '/msgServer/status'
+        #clients listen on the chat response topc
+        self._chatResponseTopic = '/msgServer/response/chatClient{}'.format(
+            self._chatClientId)
+        self.subscribe(self._serverStatusTopic)
+        self.subscribe(self._chatResponseTopic)
 
     # overriding method from MqttClient
     def on_message(self, client, userdata, msg):
         #when a client sends a message, it goes to the chatServer message handler using RPC methods
-        pass
+        print('')
 
     def typestate(self) -> None:
         while (self.isConnected):
-            receiver = input("Enter chat client ID to message: ")
+            target = input("Enter chat client ID to message: ")
             msg = input("Enter message: ")
-            message={
-                "sender":self._chatClientId,
-                "receiver":receiver,
-                "text":msg,
-            }
-            self.publish(self._myPubTopic, )
 
 if __name__ == "__main__":
     app = QApplication([])
