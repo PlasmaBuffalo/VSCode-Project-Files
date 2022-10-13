@@ -8,7 +8,7 @@
 from cgi import print_arguments
 from threading import Thread, Lock
 from datetime import datetime
-import numpy
+import numpy as np
 
 import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
@@ -25,7 +25,7 @@ class Factorial(Thread):
 
             val = input("Enter your value: ")
 
-            outcome = numpy.math.factorial(int(val))
+            outcome = np.math.factorial(int(val))  # type: ignore
 
             print("outcome: " + str(outcome))
 
