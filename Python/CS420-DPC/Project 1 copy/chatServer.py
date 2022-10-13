@@ -5,8 +5,8 @@ import sys
 from threading import Thread
 from xmlrpc.server import SimpleXMLRPCServer
 
-import numpy as np
-import pandas as pd
+import numpy
+import pandas
 import pymysql
 from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QApplication
@@ -28,9 +28,13 @@ class ChatServer(MqttClient):
         # cursor object is needed for navigating the database
         self.cur = self.conn.cursor()
 
+        self.cur.execute(
+            "CREATE TABLE chatHist (LogID INTEGER(),Sender VARCHAR(), Receiver VARCHAR(), Message VARCHAR(), Timestamp INTEGER(), WasSuccess BOOLEAN())")
+
         # this is the code connecting the RPC server to the clients
         rpcServer: SimpleXMLRPCServer = SimpleXMLRPCServer(('localhost', 8000))
         rpcServer.register_instance(ChatServer())
+
         # response server is handled on a thread
         thread: Thread = Thread(target=rpcServer.serve_forever, args=())
         thread.start()
@@ -77,6 +81,8 @@ class ChatServer(MqttClient):
 
 
 if __name__ == "__main__":
-
-    cs = ChatServer()
+    app = QApplication([])
+    cs = ChatServer('chumnugget', 'localhost', 8000)
+    cs.start()
     print('Pants chumd')
+    app.exec()

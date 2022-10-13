@@ -4,35 +4,36 @@ from threading import Timer
 from random import choice, random
 import json
 from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import QTimer
+
 
 class ChatClient(MqttClient):
 
     def __init__(self, chatClientId, *args, **kwargs):
-        #this contains ip, port, uuid of MqttClient
+        # this contains ip, port, uuid of MqttClient
         super().__init__(*args, **kwargs)
 
-        #each client has its own unique id
+        # each client has its own unique id
         self._chatClientId = chatClientId
-        #tracks if server is online
+        # tracks if server is online
         self._serverIsOpen = False
-        #clients will publish all messages on the request topic using RPC calls
-        self._pubTopic = '/msgServer/request/chatClient{}'.format(self._chatClientId)
-        #clients will subscribe to the server status topic
+        # clients will publish all messages on the request topic using RPC calls
+        self._pubTopic = '/msgServer/request/chatClient{}'.format(
+            self._chatClientId)
+        # clients will subscribe to the server status topic
         self._serverStatusTopic = '/msgServer/status'
-        #clients listen on the chat response topc
+        # clients listen on the chat response topc
         self._chatResponseTopic = '/msgServer/response/chatClient{}'.format(
             self._chatClientId)
+        # clients subscribe to server status topic so that they know when server is active/online
         self.subscribe(self._serverStatusTopic)
-        self.subscribe(self._chatResponseTopic)
 
     # overriding method from MqttClient
     def on_message(self, client, userdata, msg):
-        #when a client sends a message, it goes to the chatServer message handler using RPC methods
+        # when a client sends a message, it goes to the chatServer message handler using RPC methods
         print('')
 
     def sendMoneyRequest(self):
-        #if server is closed, stop method preemptively
+        # if server is closed, stop method preemptively
         if not self._serverIsOpen:
             return
 
@@ -54,15 +55,16 @@ class ChatClient(MqttClient):
         print('ChatClient {} sending a money request.'.format(self._chatClientId))
         print(data)
 
+
 if __name__ == "__main__":
     app = QApplication([])
 
     chatClientId = sys.argv[1]
 
-
     # client connects on localhost for now given the above ID name
-    chatClient = ChatClient(chatClientId=chatClientId, ip='127.0.0.1', port=1883)
+    chatClient = ChatClient(chatClientId=chatClientId,
+                            ip='127.0.0.1', port=1883)
 
     chatClient.start()
-    
+
     app.exec()
