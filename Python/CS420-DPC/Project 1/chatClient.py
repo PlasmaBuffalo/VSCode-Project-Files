@@ -29,15 +29,22 @@ class ChatClient(MqttClient):
         #when a client sends a message, it goes to the chatServer message handler using RPC methods
         print('')
 
+    def typestate(self) -> None:
+        while (self.isConnected):
+            target = input("Enter chat client ID to message: ")
+            msg = input("Enter message: ")
+
 if __name__ == "__main__":
     app = QApplication([])
 
     chatClientId = sys.argv[1]
 
-
     # client connects on localhost for now given the above ID name
-    chatClient = ChatClient(chatClientId=chatClientId, ip='127.0.0.1', port=1883)
+    cc = ChatClient(chatClientId=chatClientId, ip='127.0.0.1', port=1883)
 
-    chatClient.start()
+    cc.start()
     
     app.exec()
+
+    cc.typestate()
+        
