@@ -14,10 +14,10 @@ class ChatClient(MqttClient):
         #each client has its own unique id
         self._chatClientId = chatClientId
         #clients will publish all messages on the request topic using RPC calls
-        self._sendChannel = '/msgServer/request/chatClient{}'.format(self._chatClientId)
+        self._mySendChannel = '/msgServer/request/chatClient{}'.format(self._chatClientId)
         #clients listen on their own chat response topic
-        self._receiveChannel = '/msgServer/response/chatClient{}'.format(self._chatClientId)
-        self.subscribe(self._myChatResponseTopic)
+        self._myReceiveChannel = '/msgServer/response/chatClient{}'.format(self._chatClientId)
+        self.subscribe(self._myReceiveChannel)
 
     # overriding method from MqttClient
     def on_message(self, client, userdata, msg):
@@ -33,7 +33,7 @@ class ChatClient(MqttClient):
                 "receiver":receiver,
                 "text":msg,
             }
-            self.publish(self._myPubTopic, )
+            self.publish(self._mySendChannel, message)
 
 if __name__ == "__main__":
     app = QApplication([])
