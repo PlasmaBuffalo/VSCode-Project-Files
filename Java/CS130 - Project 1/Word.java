@@ -1,5 +1,5 @@
 //class to define a Word object
-//create class Word with 3 fields: word, index, and compound
+//create class Word with 3 fields: word string, compound index, and compound boolean
 public class Word{
     //create private fields
     private String word;
