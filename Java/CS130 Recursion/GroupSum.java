@@ -23,10 +23,11 @@ public class GroupSum{
             return false;
         }
         //recursive case: if the target is greater than 0, call the method again with the start incremented by 1 and the target subtracted by the value at the start index
-        return groupSum(start + 1, nums, target - nums[start]) || groupSum(start + 1, nums, target);
+        return (groupSum(start + 1, nums, target - nums[start]) || groupSum(start + 1, nums, target));
     }
 }
 
-//cases: the target could be some number already in the add array
+//cases: 
+//the target could be some number already in the add array
 //the target could be a number that is not in the add array, but can be composed of numbers in the add array
 //the target could be a number that is not in the add array and cannot be composed of numbers in the add array
