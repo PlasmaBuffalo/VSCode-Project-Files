@@ -17,6 +17,20 @@ public class Word{
         this.topics = topics;
     }
 
+    public Word(String word, int index, int difficulty, String[] topics){
+        this.word = word;
+        this.index = index;
+        //if compound index is -1, then the word is not a compound word
+        if(index == -1){
+            this.compound = false;
+        }
+        else{
+            this.compound = true;
+        }
+        this.difficulty = difficulty;
+        this.topics = topics;
+    }
+
     //create getters and setters
     public String getWord(){
         return word;
