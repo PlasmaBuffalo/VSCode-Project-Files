@@ -94,3 +94,18 @@ def has2(array, index) -> bool:
         return True
     else:
         return has2(array, index + 1)
+
+#main method to test the methods above and print the results
+def main():
+    print("count8s(8818):", count8s(8818))
+    print("count8s2(8818):", count8s2(8818))
+    print("pairStar(\"hello\"):", pairStar("hello"))
+    print("TimesTen([1, 2, 10, 10, 10], 0):", TimesTen([1, 2, 10, 10, 10], 0))
+    print("countPairs(\"axa\"):", countPairs("axa"))
+    print("count11s(\"111\"):", count11s("111"))
+    print("countHi2(\"ahixhi\"):", countHi2("ahixhi"))
+    print("strCount(\"catcowcat\", \"cat\"):", strCount("catcowcat", "cat"))
+    print("strDist(\"catcowcat\", \"cat\"):", strDist("catcowcat", "cat"))
+    print("has2([1, 2, 3], 0):", has2([1, 2, 3], 0))
+    
+main()
