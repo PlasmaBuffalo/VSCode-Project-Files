@@ -41,7 +41,7 @@ public class RecursiveArt extends Canvas {
         int[][] initial = new int[][] { { 500, 750 }, { 250, 250 }, { 750, 250 } };
         g.setColor(Color.black);
         // draw the initial triangle given the initial array of points
-        g.drawPolygon(new int[] { initial[0][0], initial[1][0], initial[2][0] },
+        g.fillPolygon(new int[] { initial[0][0], initial[1][0], initial[2][0] },
                 new int[] { initial[0][1], initial[1][1], initial[2][1] }, 3);
         // given initial triangle, three recursive calls to paint new triangles to the
         // upper left, upper right, and below
@@ -49,19 +49,19 @@ public class RecursiveArt extends Canvas {
         // object, and the current level of recursion.
         // if base case == 0, then stop recursion.
         // call recursive method
-        recursiveTriangle(g, initial, 10);
+        recursiveTriangle(g, initial, 2);
     }
 
     // recursive method to draw triangles
     public void recursiveTriangle(Graphics g, int[][] lastTri, int level) {
         // base case
-        if (level == 0) {
+        if (level == 1) {
             return;
         }
         // recursive case
         else {
             // change the color based on the level
-            g.setColor(new Color(0, 0 + level * 5, 255 - level*10));
+            g.setColor(new Color(0, level * 15, 255 - level*10));
             // calculate the coordinates of the new triangles
             // 2D array indicates three pairs of 2 coordinates
             // upper left
@@ -89,13 +89,13 @@ public class RecursiveArt extends Canvas {
             below[2][0] = (lastTri[2][0] + lastTri[1][0]) / 2;
             below[2][1] = (lastTri[2][1] + lastTri[1][1]) / 2;
             // draw the new triangles
-            g.drawPolygon(new int[] { upLeft[0][0], upLeft[1][0], upLeft[2][0] },
+            g.fillPolygon(new int[] { upLeft[0][0], upLeft[1][0], upLeft[2][0] },
                     new int[] { upLeft[0][1], upLeft[1][1], upLeft[2][1] }, 3);
 
-            g.drawPolygon(new int[] { upRight[0][0], upRight[1][0], upRight[2][0] },
+            g.fillPolygon(new int[] { upRight[0][0], upRight[1][0], upRight[2][0] },
                     new int[] { upRight[0][1], upRight[1][1], upRight[2][1] }, 3);
 
-            g.drawPolygon(new int[] { below[0][0], below[1][0], below[2][0] },
+            g.fillPolygon(new int[] { below[0][0], below[1][0], below[2][0] },
                     new int[] { below[0][1], below[1][1], below[2][1] }, 3);
 
             // call recursive method on each new triangle
