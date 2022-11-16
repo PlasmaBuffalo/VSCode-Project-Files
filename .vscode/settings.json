@@ -3,5 +3,8 @@
         "originPoint",
         "I"
     ],
-    "python.analysis.typeCheckingMode": "basic"
+    "python.analysis.typeCheckingMode": "basic",
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "main"
+    ]
 }
