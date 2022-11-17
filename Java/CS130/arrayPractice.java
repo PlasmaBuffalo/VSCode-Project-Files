@@ -13,13 +13,13 @@ public class arrayPractice {
         //print out the random array we just created
         ap.printCharArray(rdArray);
         //print outcome of countRs method using rdArray
-        System.out.println("Highest Rs: " + ap.countRs(rdArray));
+        System.out.println("Highest Rs row: " + ap.countRs(rdArray));
         //print outcome of countDs method using rdArray
-        System.out.println("Lowest Ds: " + ap.countDs(rdArray));
+        System.out.println("Lowest Rs column: " + ap.countDs(rdArray));
         //print outcome of diagonal method using rdArray
-        System.out.println("Diagonal: " + ap.diagonal(rdArray));
+        System.out.println("Diagonal print: " + ap.diagonal(rdArray));
         //print outcome of navigate method using rdArray, starting at 0,0
-        System.out.println("Navigate: " + ap.navigate(rdArray, 0, 0));
+        System.out.println("Navigating: " + ap.navigate(rdArray, 0, 0));
 
         
 
@@ -60,7 +60,10 @@ public class arrayPractice {
     //method 2: method that creates a 2D array of characters and randomly assigns each place to either an 'r' or 'd'.
     //return the 2D array.
     public char[][] createRDArray() {
-        char[][] array = new char[5][5];
+        char[][] array = new char[5][8];
+        //for testing, print the length of array and length of array[0]
+        // System.out.println(array.length);
+        // System.out.println(array[0].length);
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array[i].length; j++) {
                 if (Math.random() < 0.5) {
@@ -129,6 +132,8 @@ public class arrayPractice {
     //if current is 'd' but out of bounds, return "bottom".
     //if current is 'r' but out of bounds, return "right".
     public String navigate(char[][] array, int row, int col) {
+        //print current row and column
+        System.out.println("Now at row " + row + " and column " + col);
         if (row >= array.length || col >= array[0].length) {
             return "bottom";
         }
