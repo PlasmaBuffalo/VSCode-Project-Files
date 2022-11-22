@@ -9,9 +9,6 @@ import java.util.Scanner;
 //import arraylist
 import java.util.ArrayList;
 
-//import Word class from Word.java
-import Word;
-
 public class CompoundWord {
     public static void main(String[] args) {
         // create instance of main class
