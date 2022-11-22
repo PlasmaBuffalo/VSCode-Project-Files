@@ -32,4 +32,23 @@ public class MickeyMousePractice extends Canvas {
         g.fillOval(x + size / 2 + size, y - size / 2, size, size);
     }
 
+    //part 3: recursive method on ears
+    //draws ears recursively, given a number of steps and the original size and position.
+    public void drawEars(Graphics g, int steps, int x, int y, int size){
+        //base case: if steps is 0, do nothing
+        if(steps == 0){
+            return;
+        }
+        //draw the ear
+        g.fillOval(x, y, size, size);
+        //decrease size by half
+        size = size / 2;
+        //draw the left ear
+        drawEars(g, steps - 1, x - size / 2, y - size / 2, size);
+        //draw the right ear
+        drawEars(g, steps - 1, x + size / 2 + size, y - size / 2, size);
+    }
+
+
+
 }
