@@ -6,5 +6,9 @@
     "python.analysis.typeCheckingMode": "basic",
     "githubPullRequests.ignoredPullRequestBranches": [
         "main"
+    ],
+    "java.project.sourcePaths": [
+        "Java",
+        "."
     ]
 }

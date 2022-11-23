@@ -1,3 +1,4 @@
+package CS130.GridLayout;
 //create a sample of a grid layout
 import java.awt.*;
 import javax.swing.*;
