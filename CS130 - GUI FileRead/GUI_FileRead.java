@@ -42,6 +42,13 @@ public class GUI_FileRead extends Canvas{
             File file = new File("coords.txt");
             //create a new Scanner object
             Scanner scanner = new Scanner(file);
+            //while the file has a next line
+            while(scanner.hasNextLine()){
+                //add the next line to the ArrayList
+                coordinates.add(scanner.nextLine());
+            }
+            //close the scanner
+            scanner.close();
         } catch (FileNotFoundException e){
             //if the file is not found, print the error
             System.out.println("File not found");
