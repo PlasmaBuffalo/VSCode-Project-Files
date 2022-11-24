@@ -1,5 +1,3 @@
-package Java.Other;
-
 //a program that helps with time allocation
 //import scanner to read user input
 import java.util.Scanner;
