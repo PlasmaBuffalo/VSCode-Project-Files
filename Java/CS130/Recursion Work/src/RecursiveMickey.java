@@ -1,8 +1,8 @@
-package CS130.Recursion;
+
 /*
  * @PlasmaBuffalo, kgormley
  * Thanks to Java for having thread-unsafe drawing.
- * 
+ *
  */
 import java.awt.Canvas;
 import java.awt.Color;

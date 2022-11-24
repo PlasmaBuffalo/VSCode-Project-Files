@@ -21,7 +21,7 @@ public class arrayPractice {
         //print outcome of navigate method using rdArray, starting at 0,0
         System.out.println("Navigating: " + ap.navigate(rdArray, 0, 0));
 
-        
+
 
     }
     //create method to print out a char array using some nice formatting

@@ -1,3 +1,4 @@
+
 public class GroupSum {
     public static void main(String[] args) {
         // create instance of main class

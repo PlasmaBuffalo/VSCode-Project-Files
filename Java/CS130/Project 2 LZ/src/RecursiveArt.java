@@ -7,8 +7,6 @@
 //import necessary libraries
 import java.awt.*;
 import javax.swing.*;
-import java.util.*;
-import java.awt.event.*;
 
 public class RecursiveArt extends Canvas {
     // main method
