@@ -5,9 +5,9 @@
 -- amount of time to take between function calls (in seconds)
 local loopInterval = 10
 
-function Timer()
+function Timer(I)
     -- get the current time
-    local time = Mathf.floor(I:GetTime() % loopInterval)
+    local time = Mathf.Floor(I:GetTime() % loopInterval)
     -- whenever time is zero, return true
     if time == 0 then
         return true
@@ -17,7 +17,7 @@ function Timer()
 end -- close function
 
 function Update(I)
-    if Timer() then
-        I:Log("Timer() returned true")
+    if Timer(I) then
+        I:LogToHud("Timer() returned true")
     end
 end
