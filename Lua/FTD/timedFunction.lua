@@ -4,7 +4,7 @@ local loopInterval = 10
 
 function Timer(I)
     -- get the current time
-    local time = Mathf.floor(I:GetTime() % loopInterval)
+    local time = Mathf.Floor(I:GetTime() % loopInterval)
     -- whenever time is zero, return true
     if time == 0 then
         return true
