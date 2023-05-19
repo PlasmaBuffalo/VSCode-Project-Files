@@ -1,5 +1,5 @@
 -- A program to constantly log the health fraction of all friendly vehicles
-function FriendlyHealth(I)
+function HealthScan(I)
 
     -- number of friendlies on the field
     local friendlyCount = I:GetFriendlyCount()
