@@ -4,64 +4,96 @@
 -- after an indicated period of time passes, the function will be called again
 -- Variables:
 -- amount of time to take between function calls (in seconds)
-local loopInterval = 10
--- ID of the current friendly construct
-local repairID = -1
--- Functions:
--- timer function will return true only if the current time is a multiple of loopInterval
-function Timer(I)
-    -- get the current time
-    local time = Mathf.Floor(I:GetTime() % loopInterval)
-    -- whenever time is zero, return true
-    if time == 0 then
-        return true
-    else
-        return false
-    end -- close if statement
-end -- close function
+    local loopInterval = 10
+    -- ID of the current friendly construct
+    local repairID = -1
 
--- HealthScan will return the index of the friendly with the lowest health fraction
-function HealthScan(I)
-
-    -- number of friendlies on the field
-    local friendlyCount = I:GetFriendlyCount()
-    -- variable to store lowest health fraction found in list
-    local lowestHealth = 2
-    -- index of the friendly with the lowest health fraction
-    local lowestHealthIndex = -1
-
-    for index = 0, friendlyCount - 1 do
-        local friendlyInfo = I:GetFriendlyInfo(index)
-        local healthFraction = friendlyInfo.HealthFraction
-        if healthFraction < lowestHealth then
-            lowestHealth = healthFraction
-            lowestHealthIndex = index
+    -- Functions:
+    -- timer function will return true only if the current time is a multiple of loopInterval
+    function Timer(I)
+        -- get the current time
+        local time = Mathf.Floor(I:GetTime() % loopInterval)
+        -- whenever time is zero, return true
+        if time == 0 then
+            return true
+        else
+            return false
         end -- close if statement
-        I:Log(string.format("Friendly %d - Health Fraction: %.2f", index, healthFraction))
-    end -- close for loop
-    return lowestHealthIndex
-end -- close function
+    end -- close function
 
--- TrackFriendly will move the repairbot in range of the friendly with the lowest health fraction
-function TrackFriendly(I)
-    -- first, we get the position of the friendly to repair (in world coordinates)
-    local friendlyInfo = I:GetFriendlyInfo(repairID)
-    local friendlyPos = friendlyInfo.ReferencePosition
-    -- then, we get the position of the repair bot (in world coordinates)
-    local botPos = I:GetConstructPosition()
-    -- then, we get the vector from the bot to the friendly
-    local vectorToFriendly = friendlyPos - botPos
-    -- TODO - make the bot move towards the friendly
-    -- will try to do this by rotating the bot to face the friendly and issuing a forward thrust command
-end
--- Update will run the program
-function Update(I)
-    if Timer(I) then
-        repairID = HealthScan(I)
-        I:LogToHud("Repair Target ID: " .. repairID .. " named " .. I:GetFriendlyInfo(repairID).BlueprintName)
-    else -- if Timer(I) is false
-        TrackFriendly(I)
+    -- HealthScan will return the index of the friendly with the lowest health fraction
+    function HealthScan(I)
+
+        -- number of friendlies on the field
+        local friendlyCount = I:GetFriendlyCount()
+        -- variable to store lowest health fraction found in list
+        local lowestHealth = 2
+        -- index of the friendly with the lowest health fraction
+        local lowestHealthIndex = -1
+
+        for index = 0, friendlyCount - 1 do
+            local friendlyInfo = I:GetFriendlyInfo(index)
+            local healthFraction = friendlyInfo.HealthFraction
+            if healthFraction < lowestHealth then
+                lowestHealth = healthFraction
+                lowestHealthIndex = index
+            end -- close if statement
+            I:Log(string.format("Friendly %d - Health Fraction: %.2f", index, healthFraction))
+        end -- close for loop
+        return lowestHealthIndex
+    end -- close function
+
+    -- TrackFriendly will move the repairbot in range of the friendly with the lowest health fraction
+    function TrackFriendly(I)
+        -- first get the position of the friendly to repair (in world coordinates)
+        local friendlyPos = I:GetFriendlyInfo(repairID).ReferencePosition
+        -- then get the position of this repair bot (in world coordinates)
+        local botPos = I:GetConstructPosition()
+
+        -- set y component of friendlyPos and botPos to 0; this is for comparison purposes
+        friendlyPos.y = 0
+        botPos.y = 0
+
+        -- get the vector from the bot to the friendly
+        local vectorToFriendly = friendlyPos - botPos
+
+        -- get signed angle between the two vectors. Sign matters since we choose whether to turn left or right
+        local diffAngle = Vector3.SignedAngle(I:GetConstructForwardVector(), vectorToFriendly, Vector3.up)
+        -- little debug spinblock to show where we think the friendly is
+        I:SetSpinBlockRotationAngle(1, diffAngle)
+        I:Log("Angle difference: " .. diffAngle)
+
+        -- based on the sign of diffAngle, we issue a yaw command
+        local yawAmt = Mathf.Log10(diffAngle / 180  + 1 )
+
+        -- if yaw velocity gets too high, we'll slow it down with a negative add request
+        local yawVelocity = I:GetLocalAngularVelocity().y
+        I:Log("Yaw Velocity: "..yawVelocity)
+        if Mathf.Abs(yawVelocity) > 1 then
+            I:SetPropulsionRequest(5, 0)
+        else
+            I:SetPropulsionRequest(5, yawAmt)
+        end
+
+        -- this chunk is to make sure we're within repair distance, but not too close as to incur collision damage
+        local distance = vectorToFriendly.magnitude
+        if distance > 125 then
+            I:SetPropulsionRequest(0, 1)
+        end
+        if distance < 100 then
+            I:SetPropulsionRequest(0, -0.05)
+        end
+
     end
-    -- close conditional
-end
--- close main function
+    -- Update will run the program
+    function Update(I)
+        I:ClearLogs()
+        if Timer(I) then
+            repairID = HealthScan(I)
+            I:LogToHud("Repair Target ID: " .. repairID .. " named " .. I:GetFriendlyInfo(repairID).BlueprintName)
+        else -- if Timer(I) is false
+            TrackFriendly(I)
+        end
+        -- close conditional
+    end
+    -- close main function
