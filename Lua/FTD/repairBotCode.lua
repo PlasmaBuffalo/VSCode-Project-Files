@@ -7,6 +7,8 @@
     local loopInterval = 10
     -- ID of the current friendly construct
     local repairID = -1
+    -- yaw tolerance for the repair bot (in degrees)
+    local yawTolerance = 5
 
     -- Functions:
     -- timer function will return true only if the current time is a multiple of loopInterval
@@ -43,47 +45,63 @@
         return lowestHealthIndex
     end -- close function
 
-    -- TrackFriendly will move the repairbot in range of the friendly with the lowest health fraction
-    function TrackFriendly(I)
-        -- first get the position of the friendly to repair (in world coordinates)
-        local friendlyPos = I:GetFriendlyInfo(repairID).ReferencePosition
-        -- then get the position of this repair bot (in world coordinates)
+    -- TargetAhead will return true if the friendly to repair is within the yawTolerance of the repair bot's forward vector
+    function TargetAhead(I)
+        -- get positions of bot and friendly to repair (world coordinates)
         local botPos = I:GetConstructPosition()
-
-        -- set y component of friendlyPos and botPos to 0; this is for comparison purposes
-        friendlyPos.y = 0
+        local friendlyPos = I:GetFriendlyInfo(repairID).ReferencePosition
+        -- set y component of positions to 0; this is for comparison purposes
         botPos.y = 0
+        friendlyPos.y = 0
 
         -- get the vector from the bot to the friendly
         local vectorToFriendly = friendlyPos - botPos
 
         -- get signed angle between the two vectors. Sign matters since we choose whether to turn left or right
-        local diffAngle = Vector3.SignedAngle(I:GetConstructForwardVector(), vectorToFriendly, Vector3.up)
+        local angleDelta = Vector3.SignedAngle(I:GetConstructForwardVector(), vectorToFriendly, Vector3.up)
+
+        -- if the difference in angle is greater than tolerance level, return false
+        if Mathf.Abs(angleDelta) - yawTolerance > 0 then
+            return false
+        else -- if the difference in angle is less than tolerance level, return true
+            return true
+        end
+    end
+
+    -- TrackFriendly will move the repairbot in range of the friendly with the lowest health fraction
+    function TrackFriendly(I)
+        -- get positions of bot and friendly to repair (world coordinates)
+        local botPos = I:GetConstructPosition()
+        local friendlyPos = I:GetFriendlyInfo(repairID).ReferencePosition
+        -- set y component of positions to 0; this is for comparison purposes
+        botPos.y = 0
+        friendlyPos.y = 0
+
+        -- get the vector from the bot to the friendly
+        local vectorToFriendly = friendlyPos - botPos
+
+        -- get signed angle between the two vectors. Sign matters since we choose whether to turn left or right
+        local angleDelta = Vector3.SignedAngle(I:GetConstructForwardVector(), vectorToFriendly, Vector3.up)
         -- little debug spinblock to show where we think the friendly is
-        I:SetSpinBlockRotationAngle(1, diffAngle)
-        I:Log("Angle difference: " .. diffAngle)
+        I:SetSpinBlockRotationAngle(2, angleDelta)
+        I:Log("Angle difference: " .. angleDelta)
 
-        -- based on the sign of diffAngle, we issue a yaw command
-        local yawAmt = Mathf.Log10(diffAngle / 180  + 1 )
-
-        -- if yaw velocity gets too high, we'll slow it down with a negative add request
+        -- get the yaw velocity of the bot
         local yawVelocity = I:GetLocalAngularVelocity().y
-        I:Log("Yaw Velocity: "..yawVelocity)
-        if Mathf.Abs(yawVelocity) > 1 then
-            I:SetPropulsionRequest(5, 0)
-        else
-            I:SetPropulsionRequest(5, yawAmt)
-        end
+        local yawRequest = angleDelta / 180
+        I:Log("YR=" .. yawRequest)
 
-        -- this chunk is to make sure we're within repair distance, but not too close as to incur collision damage
-        local distance = vectorToFriendly.magnitude
-        if distance > 125 then
-            I:SetPropulsionRequest(0, 1)
+        -- if the friendly is ahead of the bot, move forward
+        if TargetAhead(I) then
+            I:SetPropulsionRequest(5, -yawRequest/2)
+            --get forward amount, increasing thrust as distance increases
+            local forwardAmount = (vectorToFriendly.magnitude - 100) * 0.01
+            I:SetPropulsionRequest(0, forwardAmount)
+        else -- we need to adjust yaw
+            I:SetPropulsionRequest(0, 0)
+            local yawRequest = angleDelta / 180
+            I:SetPropulsionRequest(5, yawRequest)
         end
-        if distance < 100 then
-            I:SetPropulsionRequest(0, -0.05)
-        end
-
     end
     -- Update will run the program
     function Update(I)
