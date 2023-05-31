@@ -84,22 +84,20 @@
         local angleDelta = Vector3.SignedAngle(I:GetConstructForwardVector(), vectorToFriendly, Vector3.up)
         -- little debug spinblock to show where we think the friendly is
         I:SetSpinBlockRotationAngle(2, angleDelta)
-        I:Log("Angle difference: " .. angleDelta)
-
-        -- get the yaw velocity of the bot
-        local yawVelocity = I:GetLocalAngularVelocity().y
-        local yawRequest = angleDelta / 180
-        I:Log("YR=" .. yawRequest)
+        I:Log("Angle difference 1: " .. angleDelta)
 
         -- if the friendly is ahead of the bot, move forward
         if TargetAhead(I) then
-            I:SetPropulsionRequest(5, -yawRequest/2)
             --get forward amount, increasing thrust as distance increases
             local forwardAmount = (vectorToFriendly.magnitude - 100) * 0.01
             I:SetPropulsionRequest(0, forwardAmount)
         else -- we need to adjust yaw
+            --stop moving forward
             I:SetPropulsionRequest(0, 0)
-            local yawRequest = angleDelta / 180
+            --get relevant yaw values
+            local yawVelocity = I:GetLocalAngularVelocity().y
+            local yawRequest = (angleDelta / 180) - Mathf.Clamp01(yawVelocity / 10)
+            -- make propulsion request
             I:SetPropulsionRequest(5, yawRequest)
         end
     end
