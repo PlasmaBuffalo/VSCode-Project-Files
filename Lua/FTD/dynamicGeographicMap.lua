@@ -1,6 +1,6 @@
 -- a program to dynamically adjust the height of a ship's pistons to simulate a local terrain map
 -- stepDistance: the grid size for terrain altitude checking (in meters)
-local stepDistance = 50
+local stepDistance = 100
 -- zeroPoint: the local coordinates for the central piston, placing the ship at the center of the map at all times
 -- this value is set by user, or else the position differences will be incorrect
 local zeroPoint = Vector3.zero
