@@ -25,15 +25,16 @@ function Update(I)
 
             -- difference between piston positions: pInfo.LocalPosition - zeroPoint
             local pistonPosDiff = pistonInfo.LocalPosition - zeroPoint
-            I:Log("relative location for ID" .. pistonInfo.SubConstructIdentifier .. " is " ..pistonInfo.LocalPosition.x .. ", " .. pistonInfo.LocalPosition.y .. ", " .. pistonInfo.LocalPosition.z)
-            I:Log("pistonPosDiff for ID" .. pistonInfo.SubConstructIdentifier .. " is " .. pistonPosDiff.x .. ", " ..
-                      pistonPosDiff.y .. ", " .. pistonPosDiff.z)
+            --I:Log("relative location for ID" .. pistonInfo.SubConstructIdentifier .. " is " ..pistonInfo.LocalPosition.x .. ", " .. pistonInfo.LocalPosition.y .. ", " .. pistonInfo.LocalPosition.z)
+            --I:Log("pistonPosDiff for ID" .. pistonInfo.SubConstructIdentifier .. " is " .. pistonPosDiff.x .. ", " ..pistonPosDiff.y .. ", " .. pistonPosDiff.z)
             -- multiply by stepDistance to get the proper point on terrain to checking
             local terrainPosDiff = pistonPosDiff * stepDistance
-            I:Log("terrainPosDiff for ID" .. pistonInfo.SubConstructIdentifier .. " is " .. terrainPosDiff.x .. ", " ..
-                      terrainPosDiff.y .. ", " .. terrainPosDiff.z)
-            -- get terrain altitude at this point
+            --I:Log("terrainPosDiff for ID" .. pistonInfo.SubConstructIdentifier .. " is " .. terrainPosDiff.x .. ", " ..terrainPosDiff.y .. ", " .. terrainPosDiff.z)
+            -- get terrain altitude at this point - y coordinates are ignored
+            local terrainAlt = I:GetTerrainAltitudeForLocalPosition(terrainPosDiff.x, 0, terrainPosDiff.z)
             -- set piston height according to terrain altitude
+            local pistonHeight = terrainAlt*0.022+5.5
+            I:SetPistonExtension(I:GetSubConstructIdentifier(i), pistonHeight)
         end -- close if statement
     end -- close for loop
 end -- close Update function
