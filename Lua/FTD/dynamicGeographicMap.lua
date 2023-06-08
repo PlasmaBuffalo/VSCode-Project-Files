@@ -1,13 +1,9 @@
 -- a program to dynamically adjust the height of a ship's pistons to simulate a local terrain map
 -- stepDistance: the grid size for terrain altitude checking (in meters)
-local stepDistance = 100
+local stepDistance = 50
 -- zeroPoint: the local coordinates for the central piston, placing the ship at the center of the map at all times
 -- this value is set by user, or else the position differences will be incorrect
 local zeroPoint = Vector3.zero
-local terrainBounds = {
-    lower = -250,
-    upper = 250
-}
 
 function Update(I)
     local componentCount = I:GetAllSubconstructsCount()
@@ -25,15 +21,15 @@ function Update(I)
 
             -- difference between piston positions: pInfo.LocalPosition - zeroPoint
             local pistonPosDiff = pistonInfo.LocalPosition - zeroPoint
-            --I:Log("relative location for ID" .. pistonInfo.SubConstructIdentifier .. " is " ..pistonInfo.LocalPosition.x .. ", " .. pistonInfo.LocalPosition.y .. ", " .. pistonInfo.LocalPosition.z)
-            --I:Log("pistonPosDiff for ID" .. pistonInfo.SubConstructIdentifier .. " is " .. pistonPosDiff.x .. ", " ..pistonPosDiff.y .. ", " .. pistonPosDiff.z)
+            -- I:Log("relative location for ID" .. pistonInfo.SubConstructIdentifier .. " is " ..pistonInfo.LocalPosition.x .. ", " .. pistonInfo.LocalPosition.y .. ", " .. pistonInfo.LocalPosition.z)
+            -- I:Log("pistonPosDiff for ID" .. pistonInfo.SubConstructIdentifier .. " is " .. pistonPosDiff.x .. ", " ..pistonPosDiff.y .. ", " .. pistonPosDiff.z)
             -- multiply by stepDistance to get the proper point on terrain to checking
             local terrainPosDiff = pistonPosDiff * stepDistance
-            --I:Log("terrainPosDiff for ID" .. pistonInfo.SubConstructIdentifier .. " is " .. terrainPosDiff.x .. ", " ..terrainPosDiff.y .. ", " .. terrainPosDiff.z)
+            -- I:Log("terrainPosDiff for ID" .. pistonInfo.SubConstructIdentifier .. " is " .. terrainPosDiff.x .. ", " ..terrainPosDiff.y .. ", " .. terrainPosDiff.z)
             -- get terrain altitude at this point - y coordinates are ignored
             local terrainAlt = I:GetTerrainAltitudeForLocalPosition(terrainPosDiff.x, 0, terrainPosDiff.z)
             -- set piston height according to terrain altitude
-            local pistonHeight = terrainAlt*0.022+5.5
+            local pistonHeight = terrainAlt * 0.022 + 5.5
             I:SetPistonExtension(I:GetSubConstructIdentifier(i), pistonHeight)
         end -- close if statement
     end -- close for loop
