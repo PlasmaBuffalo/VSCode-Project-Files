@@ -1,0 +1,27 @@
+DETERMINE HIGHEST PRIORITY PROJECTILE
+
+Priority=
+(1/Distance*A*B)
+
+A=
+If(ClosingVelocity > 0, 1, 0)
+
+B=
+If(AngleFromIntercept < 45, 1, 0)
+
+DETERMINE ACTION
+
+Field 1: Yaw
+If(d/c<=1 & p, -1*A, 0)
+
+Field 2: Pitch
+If(d<300, If(0<=d/c<=1 & p,1+(Asin(r/d)/90*Cos(b)*B),(Asin(r/d)/90*Cos(b)*B)), 0)
+
+Field 3: Roll
+If(d<300, If(0<=d/c<=1 & p,1+(Asin(r/d)/90*Sin(b)*A),(Asin(r/d)/90*Sin(b)*A)), 0)
+
+A=
+If(b<0,1,-1)
+
+B=
+If(r<0,1,-1)
