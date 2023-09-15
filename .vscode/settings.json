@@ -8,8 +8,7 @@
         "main"
     ],
     "java.project.sourcePaths": [
-        "Java",
-        "."
+        "Java"
     ],
     "java.dependency.packagePresentation": "hierarchical",
     "java.dependency.syncWithFolderExplorer": true
