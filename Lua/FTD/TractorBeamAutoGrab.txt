@@ -1,0 +1,3 @@
+Goal: A lua loop that will take in a text phrase and modify a tractor beam
+- Text taken in: "PTP Weapon"
+- Outcome: A particular tractor beam will search for friendly vehicles with this string in their name and grab the first vehicle with that name it finds
