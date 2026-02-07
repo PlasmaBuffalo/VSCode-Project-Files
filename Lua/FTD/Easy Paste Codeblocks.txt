@@ -1,0 +1,10 @@
+local time = I:GetTime()
+I:Log("time="..time)
+
+--I:Log("thisVector="..localPos.x..", "..localPos.y..", "..localPos.z)
+
+This gets the 2D distance of the main AI's main target (altitude ignored)
+I:GetTargetInfo(0,0).GroundDistance
+
+This gets the target altitude
+I:GetTargetInfo(0,0).AltitudeAboveSeaLevel

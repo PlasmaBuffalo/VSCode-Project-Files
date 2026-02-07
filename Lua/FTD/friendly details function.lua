@@ -1,4 +1,4 @@
--- A program to constantly log the health fraction of all friendly vehicles
+-- A function to constantly log the health fraction of all friendly vehicles
 function HealthScan(I)
 
     -- number of friendlies on the field
